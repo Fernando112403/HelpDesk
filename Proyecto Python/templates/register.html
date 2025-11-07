@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Crear cuenta</h2>
+{% if error %}<p style="color:red;">{{error}}</p>{% endif %}
+<form method="post">
+  <input name="usuario" placeholder="Usuario" required>
+  <input name="password" type="password" placeholder="Contraseña" required>
+  <label>Rol:</label>
+  <select name="rol">
+    <option value="usuario">Usuario</option>
+    <option value="tecnico">Técnico</option>
+  </select>
+  <button>Registrar</button>
+</form>
+<p><a href="/login">Volver</a></p>
+{% endblock %}
