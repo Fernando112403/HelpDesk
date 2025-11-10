@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mis Tickets - Helpdesk Banco Torogoz</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f4f7fb;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background: linear-gradient(90deg, #003366, #007bff);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .usuario {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+        .usuario span {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 6px 10px;
+            border-radius: 5px;
+        }
+        header a {
+            background: white;
+            color: #003366;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+        header a:hover {
+            background: #e8e8e8;
+        }
+        main {
+            padding: 30px;
+        }
+        .btn-nuevo {
+            background: #28a745;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            float: right;
+            margin-bottom: 15px;
+        }
+        .btn-nuevo:hover {
+            background: #218838;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background: #003366;
+            color: white;
+            text-align: center;
+        }
+        tr:nth-child(even) {
+            background: #f2f6fa;
+        }
+        tr:hover {
+            background: #dce9ff;
+        }
+        .sin-tickets {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+        .archivo-link {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .archivo-link:hover {
+            text-decoration: underline;
+        }
+        .estado {
+            text-align: center;
+            font-weight: bold;
+        }
+        .estado span {
+            border-radius: 4px;
+            padding: 4px 8px;
+        }
+        .en-proceso { background-color: #ffeeba; color: #856404; }
+        .resuelto { background-color: #c3e6cb; color: #155724; }
+        .cerrado { background-color: #bee5eb; color: #0c5460; }
+        .cancelado { background-color: #f5c6cb; color: #721c24; }
+        .abierto { background-color: #d6d8d9; color: #383d41; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🎫 Helpdesk Banco Torogoz</h1>
+        <div class="usuario">
+            <span>👤 {{ session['nombre'] }}</span>
+            <a href="{{ url_for('auth.logout') }}">Cerrar sesión</a>
+        </div>
+    </header>
+
+    <main>
+        <a href="{{ url_for('tickets_bp.nuevo_ticket') }}" class="btn-nuevo">+ Nuevo ticket</a>
+        <h2>Mis tickets registrados</h2>
+
+        {% if tickets %}
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Título</th>
+                    <th>Estado</th>
+                    <th>Prioridad</th>
+                    <th>Asignado a</th>
+                    <th>Archivo</th>
+                    <th>Fecha creación</th>
+                    <th>Inicio</th>
+                    <th>Finalización</th>
+                    <th>Comentario técnico</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in tickets %}
+                <tr>
+                    <td class="text-center">{{ t.id }}</td>
+                    <td>{{ t.titulo }}</td>
+                    <td class="estado">
+                        <span class="{% if t.estado == 'En proceso' %}en-proceso{% elif t.estado == 'Resuelto' %}resuelto{% elif t.estado == 'Cancelado' %}cancelado{% elif t.estado == 'Cerrado por ausencia' %}cerrado{% else %}abierto{% endif %}">
+                            {{ t.estado }}
+                        </span>
+                    </td>
+                    <td>{{ t.prioridad }}</td>
+                    <td>{{ t.asignado_a or 'Sin asignar' }}</td>
+                    <td class="text-center">
+                        {% if t.archivo %}
+                            <a href="{{ url_for('static', filename=t.archivo.split('static/')[1]) }}" target="_blank" class="archivo-link">📎 Ver archivo</a>
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td class="text-center">{{ t.fecha or '—' }}</td>
+                    <td class="text-center">{{ t.fecha_inicio or '—' }}</td>
+                    <td class="text-center">{{ t.fecha_finalizacion or '—' }}</td>
+                    <td>{{ t.descripcion_tecnico or '—' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="sin-tickets">
+            No tienes tickets registrados aún.
+        </div>
+        {% endif %}
+    </main>
+</body>
+</html>

@@ -1,11 +1,121 @@
-{% extends "base.html" %}
-{% block content %}
-<h2>Iniciar Sesión</h2>
-{% if error %}<p style="color:red;">{{error}}</p>{% endif %}
-<form method="post">
-  <input name="usuario" placeholder="Usuario" required>
-  <input name="password" type="password" placeholder="Contraseña" required>
-  <button>Entrar</button>
-</form>
-<p><a href="/registro">Registrarse</a></p>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Helpdesk Banco Torogoz</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            /* 🔹 Azul exacto y uniforme igual al del banner del robot */
+            background-color: #004d97;
+            overflow: hidden;
+        }
+
+        /* Fondo con el robot */
+        .left-side {
+    flex: 1.1;
+    background: url('{{ url_for("static", filename="fondo_banco.png") }}') no-repeat right center;
+    background-size: contain;
+    background-position: calc(100% + -75px) center; /* 👈 mueve el robot más a la izquierda */
+    height: 100%;
+    position: relative;
+    z-index: 1;
+}
+
+
+        /* Tarjeta */
+        .card {
+            background: #fff;
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+            width: 370px;
+            text-align: center;
+            margin-right: 80px;
+            position: relative;
+            z-index: 0;
+        }
+
+        .card img {
+            width: 290px;
+            margin-bottom: 10px;
+        }
+
+        .card h2 {
+            color: #003366;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        button {
+            background: #0042A6; /* 🔹 Mismo azul del fondo */
+            color: white;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #00398f;
+        }
+
+        a {
+            text-decoration: none;
+            color: #0042A6;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsivo */
+        @media (max-width: 900px) {
+            body {
+                flex-direction: column;
+                justify-content: center;
+            }
+            .left-side {
+                display: none;
+            }
+            .card {
+                margin: 0 auto;
+                width: 90%;
+                z-index: 2;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="left-side"></div>
+
+    <div class="card">
+        <img src="{{ url_for('static', filename='logo_torogoz.jpg') }}" alt="Logo Banco Torogoz">
+        <h2>Helpdesk Banco Torogoz</h2>
+
+        <form action="{{ url_for('auth.login') }}" method="post">
+            <input type="email" name="correo" placeholder="Correo electrónico" required>
+            <input type="password" name="contrasena" placeholder="Contraseña" required>
+            <button type="submit">Iniciar sesión</button>
+        </form>
+
+        <p>¿No tienes cuenta? <a href="{{ url_for('auth.registro') }}">Regístrate aquí</a></p>
+    </div>
+</body>
+</html>

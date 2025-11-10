@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Tickets Asignados - Banco Torogoz</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background: #f4f7fb;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        header {
+            background: linear-gradient(90deg, #003366, #007bff);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header h1 {
+            font-size: 22px;
+            margin: 0;
+        }
+        .usuario {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .usuario span {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 6px 10px;
+            border-radius: 6px;
+        }
+        main {
+            padding: 25px;
+        }
+        table {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        th {
+            background: #003366;
+            color: white;
+            text-align: center;
+        }
+        td {
+            vertical-align: middle;
+        }
+        .badge {
+            font-size: 0.9em;
+        }
+        .comentario {
+            width: 180px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🧰 Tickets asignados</h1>
+        <div class="usuario">
+            <span>👨‍🔧 {{ session['nombre'] }}</span>
+            <a href="{{ url_for('auth.logout') }}" class="btn btn-light btn-sm text-primary fw-bold">Cerrar sesión</a>
+        </div>
+    </header>
+
+    <main class="container">
+        <h3 class="mb-4 text-primary">Tickets asignados a {{ session['nombre'] }}</h3>
+
+        <table class="table table-bordered table-striped align-middle">
+            <thead class="table-primary text-center">
+                <tr>
+                    <th>ID</th>
+                    <th>Título</th>
+                    <th>Descripción</th>
+                    <th>Reportado por</th>
+                    <th>Estado</th>
+                    <th>Prioridad</th>
+                    <th>Fecha creación</th>
+                    <th>Inicio</th>
+                    <th>Finalización</th>
+                    <th>Comentario técnico</th>
+                    <th>Cambiar estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if tickets %}
+                    {% for t in tickets %}
+                    <tr>
+                        <td class="text-center">{{ t.id }}</td>
+                        <td>{{ t.titulo }}</td>
+                        <td>{{ t.descripcion }}</td>
+                        <td>{{ t.reportado_por or 'Desconocido' }}</td>
+
+                        <td class="text-center">
+                            <span class="badge
+                                {% if t.estado == 'Abierto' %}bg-secondary
+                                {% elif t.estado == 'En proceso' %}bg-warning text-dark
+                                {% elif t.estado == 'Resuelto' %}bg-success
+                                {% elif t.estado == 'Cerrado por ausencia' %}bg-info
+                                {% elif t.estado == 'Cancelado' %}bg-danger
+                                {% else %}bg-light text-dark{% endif %}">
+                                {{ t.estado }}
+                            </span>
+                        </td>
+
+                        <td class="text-center">{{ t.prioridad }}</td>
+                        <td class="text-center">{{ t.fecha or '—' }}</td>
+                        <td class="text-center">{{ t.fecha_inicio or '—' }}</td>
+                        <td class="text-center">{{ t.fecha_finalizacion or '—' }}</td>
+                        <td>{{ t.descripcion_tecnico or 'Sin comentarios' }}</td>
+
+                        <!-- Formulario para cambiar el estado -->
+                        <td class="text-center">
+                            <form action="{{ url_for('tickets_bp.actualizar_estado', id=t.id) }}" method="POST" class="d-flex flex-column align-items-center">
+                                <select name="estado" class="form-select form-select-sm mb-2" required>
+                                    <option selected disabled>Cambiar...</option>
+                                    <option value="En proceso">En proceso</option>
+                                    <option value="Resuelto">Resuelto</option>
+                                    <option value="Cerrado por ausencia">Cerrado por ausencia</option>
+                                    <option value="Cancelado">Cancelado</option>
+                                </select>
+                                <input type="text" name="comentario" placeholder="Comentario técnico" class="form-control form-control-sm comentario mb-2">
+                                <button type="submit" class="btn btn-sm btn-success">Actualizar</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr><td colspan="11" class="text-center">No tienes tickets asignados.</td></tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Nuevo Ticket - Helpdesk Banco Torogoz</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f4f7fb;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background: linear-gradient(90deg, #003366, #007bff);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        main {
+            padding: 30px;
+        }
+        form {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            width: 600px;
+            margin: 0 auto;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 15px;
+        }
+        input[type="text"], textarea, input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            margin-top: 5px;
+            font-size: 15px;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        .contador {
+            font-size: 12px;
+            color: #666;
+            text-align: right;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .volver {
+            text-decoration: none;
+            color: #003366;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        .volver:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🎫 Nuevo Ticket - Banco Torogoz</h1>
+        <a href="{{ url_for('tickets_bp.lista_tickets') }}" style="background:white;color:#003366;padding:8px 15px;border-radius:6px;text-decoration:none;font-weight:bold;">Volver</a>
+    </header>
+
+    <main>
+        <form action="{{ url_for('tickets_bp.nuevo_ticket') }}" method="POST" enctype="multipart/form-data">
+            <!-- Título / Equipo -->
+            <label for="titulo">Equipo (máx. 50 caracteres)</label>
+            <input list="equipos" id="titulo" name="titulo" maxlength="50" placeholder="Ej: IMPRESORA" required>
+            <datalist id="equipos">
+                 <option value="IMPRESORA"></option>
+  <option value="LAPTOP"></option>
+  <option value="MONITOR"></option>
+  <option value="CPU"></option>
+  <option value="TECLADO"></option>
+  <option value="MOUSE"></option>
+  <option value="ESCÁNER DE DOCUMENTOS"></option>
+  <option value="CAJERO AUTOMÁTICO (ATM)"></option>
+  <option value="CONTADORA DE BILLETES"></option>
+  <option value="LECTOR DE TARJETAS"></option>
+  <option value="ROUTER"></option>
+  <option value="SERVIDOR"></option>
+  <option value="SISTEMA DE CÁMARAS CCTV"></option>
+
+  <!-- Equipos y sistemas de software -->
+  <option value="SISTEMA CORE BANCARIO"></option>
+  <option value="SISTEMA DE CAJA"></option>
+  <option value="SISTEMA DE CRÉDITOS"></option>
+  <option value="SISTEMA DE CLIENTES (CRM)"></option>
+  <option value="SISTEMA DE PLANILLAS"></option>
+  <option value="SISTEMA DE TRANSACCIONES INTERNAS"></option>
+  <option value="CORREO CORPORATIVO"></option>
+  <option value="OFFICE 365"></option>
+  <option value="ANTIVIRUS CORPORATIVO"></option>
+  <option value="VPN INSTITUCIONAL"></option>
+  <option value="FIRMAS DIGITALES"></option>
+            </datalist>
+            <div class="contador" id="contador-titulo">0 / 50</div>
+
+            <!-- Descripción -->
+            <label for="descripcion">Descripción del problema (máx. 200 caracteres)</label>
+            <textarea id="descripcion" name="descripcion" maxlength="200" placeholder="Describe brevemente el problema..." required></textarea>
+            <div class="contador" id="contador-descripcion">0 / 200</div>
+
+            <!-- Archivo -->
+            <label for="archivo">Adjuntar archivo (opcional)</label>
+            <input type="file" name="archivo" accept=".png,.jpg,.jpeg,.pdf,.docx,.txt">
+
+            <button type="submit">Crear Ticket</button>
+        </form>
+    </main>
+
+    <!-- Script de fallas comunes -->
+    <script src="{{ url_for('static', filename='js/ticket-form.js') }}"></script>
+
+    <script>
+        // Contadores de caracteres
+        const tituloInput = document.getElementById("titulo");
+        const descripcionInput = document.getElementById("descripcion");
+        const contadorTitulo = document.getElementById("contador-titulo");
+        const contadorDescripcion = document.getElementById("contador-descripcion");
+
+        tituloInput.addEventListener("input", () => {
+            contadorTitulo.textContent = `${tituloInput.value.length} / 50`;
+        });
+        descripcionInput.addEventListener("input", () => {
+            contadorDescripcion.textContent = `${descripcionInput.value.length} / 200`;
+        });
+    </script>
+</body>
+</html>
